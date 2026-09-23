@@ -1,5 +1,6 @@
 package com.ebv12.backend.config;
 
+import com.ebv12.backend.api.dto.ErrorResponse;
 import com.ebv12.backend.service.ResourceNotFoundException;
 import com.ebv12.backend.service.SlotNotAvailableException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -40,8 +41,5 @@ public class GlobalExceptionHandler {
 
     private ResponseEntity<ErrorResponse> buildError(HttpStatus status, String error, String message, String path) {
         return ResponseEntity.status(status).body(new ErrorResponse(Instant.now(), status.value(), error, message, path));
-    }
-
-    public record ErrorResponse(Instant timestamp, int status, String error, String message, String path) {
     }
 }

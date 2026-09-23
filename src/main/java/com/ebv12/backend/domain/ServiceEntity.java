@@ -11,23 +11,24 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 @Entity
-@Table(name = "services")
+@Table(name = "servicios")
 public class ServiceEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "id_servicio")
     private UUID id;
 
-    @Column(nullable = false)
+    @Column(name = "id_proveedor", nullable = false)
     private UUID proveedorId;
 
     @Column(nullable = false)
     private String nombre;
 
-    @Column(nullable = false)
+    @Column
     private String categoria;
 
-    @Column(nullable = false)
+    @Column(columnDefinition = "TEXT")
     private String descripcion;
 
     @Column(nullable = false, precision = 12, scale = 2)

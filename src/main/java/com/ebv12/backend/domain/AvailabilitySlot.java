@@ -15,15 +15,16 @@ import java.time.LocalTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "availability_slots")
+@Table(name = "horarios")
 public class AvailabilitySlot {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "id_horario")
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "servicio_id", nullable = false)
+    @JoinColumn(name = "id_servicio", nullable = false)
     private ServiceEntity servicio;
 
     @Column(nullable = false)

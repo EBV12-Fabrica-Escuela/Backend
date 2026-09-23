@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/v1")
+@RequestMapping("/api")
 public class ServiceController {
 
     private final ServiceCatalogService serviceCatalogService;
@@ -34,7 +34,7 @@ public class ServiceController {
         this.availabilityService = availabilityService;
     }
 
-    @GetMapping("/services")
+    @GetMapping("/servicios")
     public ResponseEntity<PagedApiResponse<ServiceResponse>> getServices(
             @RequestParam(name = "q", required = false) String q,
             @RequestParam(name = "categoria", required = false) String categoria,
@@ -50,7 +50,7 @@ public class ServiceController {
         return ResponseEntity.ok(new PagedApiResponse<>(result.getContent(), result.getNumber(), result.getSize(), result.getTotalElements()));
     }
 
-    @GetMapping("/services/{id}/availability")
+    @GetMapping("/servicios/{id}/disponibilidad")
     public ResponseEntity<ApiDataResponse<List<AvailabilityResponse>>> getAvailability(
             @PathVariable("id") UUID serviceId,
             @RequestParam("fecha") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fecha

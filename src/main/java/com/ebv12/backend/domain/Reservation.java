@@ -19,22 +19,23 @@ import java.time.LocalTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "reservations")
+@Table(name = "reservas")
 public class Reservation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "id_reserva")
     private UUID id;
 
-    @Column(nullable = false)
+    @Column(name = "id_cliente", nullable = false)
     private UUID clienteId;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "servicio_id", nullable = false)
+    @JoinColumn(name = "id_servicio", nullable = false)
     private ServiceEntity servicio;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "slot_id", nullable = false)
+    @JoinColumn(name = "id_horario", nullable = false)
     private AvailabilitySlot slot;
 
     @Column(nullable = false)
