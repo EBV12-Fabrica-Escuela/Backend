@@ -29,14 +29,14 @@ public class AuthService {
 
     @Transactional
     public UserResponse register(RegisterUserRequest request) {
-        String normalizedEmail = request.email().trim();
+        String normalizedEmail = request.email().trim().toLowerCase(Locale.ROOT);
         if (userRepository.existsByEmail(normalizedEmail)) {
             throw new EmailAlreadyExistsException("El correo ya está registrado");
         }
 
         User user = new User();
         user.setName(request.name().trim());
-        user.setEmail(normalizedEmail.toLowerCase(Locale.ROOT));
+        user.setEmail(normalizedEmail);
         user.setPasswordHash(passwordEncoder.encode(request.password()));
         user.setRole(request.role() != null ? request.role() : UserRole.CLIENT);
         user.setTermsAccepted(request.termsAccepted());

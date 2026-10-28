@@ -5,6 +5,7 @@ import com.ebv12.backend.domain.ServiceEntity;
 import com.ebv12.backend.repository.AvailabilitySlotRepository;
 import com.ebv12.backend.repository.ReservationRepository;
 import com.ebv12.backend.repository.ServiceRepository;
+import com.ebv12.backend.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import java.time.LocalTime;
 import java.util.UUID;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -39,11 +41,97 @@ class ReservationAuthIntegrationTest {
     @Autowired
     private ReservationRepository reservationRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @BeforeEach
     void clean() {
         reservationRepository.deleteAll();
         availabilitySlotRepository.deleteAll();
         serviceRepository.deleteAll();
+        userRepository.deleteAll();
+    }
+
+    @Test
+    void shouldRegisterClientWithDefaultRoleAndNormalizedData() throws Exception {
+        String body = """
+                {
+                  "name": "  Cliente de prueba  ",
+                  "email": "CLIENTE@EXAMPLE.COM",
+                  "password": "password123",
+                  "termsAccepted": true
+                }
+                """;
+
+        mockMvc.perform(post("/api/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.data.name").value("Cliente de prueba"))
+                .andExpect(jsonPath("$.data.email").value("cliente@example.com"))
+                .andExpect(jsonPath("$.data.role").value("CLIENT"))
+                .andExpect(jsonPath("$.data.enabled").value(true))
+                .andExpect(jsonPath("$.data.termsAccepted").value(true));
+    }
+
+    @Test
+    void shouldRegisterProviderWithRequestedRole() throws Exception {
+        String body = """
+                {
+                  "name": "Proveedor de prueba",
+                  "email": "provider@example.com",
+                  "password": "password123",
+                  "role": "PROVIDER",
+                  "termsAccepted": true
+                }
+                """;
+
+        mockMvc.perform(post("/api/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.data.role").value("PROVIDER"));
+    }
+
+    @Test
+    void shouldRejectRegistrationWithInvalidData() throws Exception {
+        String body = """
+                {
+                  "name": " ",
+                  "email": "not-an-email",
+                  "password": "short",
+                  "termsAccepted": false
+                }
+                """;
+
+        mockMvc.perform(post("/api/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error").value("BAD_REQUEST"));
+    }
+
+    @Test
+    void shouldRejectRegistrationWhenEmailAlreadyExists() throws Exception {
+        String body = """
+                {
+                  "name": "Cliente de prueba",
+                  "email": "duplicate@example.com",
+                  "password": "password123",
+                  "termsAccepted": true
+                }
+                """;
+
+        mockMvc.perform(post("/api/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body))
+                .andExpect(status().isCreated());
+
+        mockMvc.perform(post("/api/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.message").value("El correo ya está registrado"));
     }
 
     @Test

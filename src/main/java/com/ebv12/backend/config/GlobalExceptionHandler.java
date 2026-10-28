@@ -4,6 +4,7 @@ import com.ebv12.backend.api.dto.ErrorResponse;
 import com.ebv12.backend.service.ResourceNotFoundException;
 import com.ebv12.backend.service.SlotNotAvailableException;
 import com.ebv12.backend.service.AuthenticationException;
+import com.ebv12.backend.service.EmailAlreadyExistsException;
 import com.ebv12.backend.service.NoAvailabilityException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
@@ -35,6 +36,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<ErrorResponse> handleAuthentication(AuthenticationException ex, HttpServletRequest request) {
         return buildError(HttpStatus.UNAUTHORIZED, "UNAUTHORIZED", ex.getMessage(), request.getRequestURI());
+    }
+
+    @ExceptionHandler(EmailAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleEmailAlreadyExists(
+            EmailAlreadyExistsException ex, HttpServletRequest request) {
+        return buildError(HttpStatus.CONFLICT, "CONFLICT", ex.getMessage(), request.getRequestURI());
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
