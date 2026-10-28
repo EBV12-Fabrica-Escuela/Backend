@@ -26,9 +26,12 @@ API de reservas de servicios construida con Spring Boot 3.3.4, Java 17 y Postgre
    DB_PASSWORD=tu_contraseña
    SERVER_PORT=8080
    DDL_AUTO=update
+   FRONTEND_URL=https://frontend-one-pi-98.vercel.app
    ```
 
    El archivo `.env` está excluido de Git para evitar publicar credenciales.
+
+   `FRONTEND_URL` define el único origen web permitido por CORS.
 
 3. `DDL_AUTO=update` permite crear y actualizar las tablas automáticamente durante el debugging local. Para entornos compartidos o producción, usa `DDL_AUTO=validate` y aplica el esquema mediante migraciones o scripts controlados.
 
