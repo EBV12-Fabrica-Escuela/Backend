@@ -18,11 +18,8 @@ WORKDIR /app
 # (ej. backend-0.0.1-SNAPSHOT.jar), sin tener que escribirlo a mano.
 COPY --from=build /app/target/*.jar app.jar
 
-ENV SPRING_PROFILES_ACTIVE=prod
-
-# Render inyecta la variable PORT en runtime; application-prod.properties
-# ya usa server.port=${PORT:8080}, así que esto simplemente documenta
-# el puerto por defecto para cuando se corre local con 'docker run'.
+# Render inyecta PORT en runtime; la configuración de Spring lo prioriza
+# sobre el puerto local SERVER_PORT.
 EXPOSE 8080
 
 ENTRYPOINT ["java", "-jar", "app.jar"]

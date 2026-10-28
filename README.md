@@ -63,6 +63,8 @@ mvn spring-boot:run
 
 La API estará disponible en `http://localhost:8080`, o en el puerto definido por `SERVER_PORT`.
 
+En Render, Spring usa automáticamente la variable `PORT` que Render asigna al contenedor.
+
 ## Ejecutar las pruebas
 
 Las pruebas usan una base de datos H2 en memoria:
